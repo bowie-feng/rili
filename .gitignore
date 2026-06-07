@@ -1,0 +1,20 @@
+# Swift / Xcode
+.build/
+DerivedData/
+*.xcodeproj
+*.xcworkspace
+*.xcuserdata
+
+# App bundle
+rili.app/
+
+# macOS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code
+.claude/
