@@ -61,6 +61,23 @@ struct SettingsView: View {
                 }
             }
 
+            // 开机自启动
+            VStack(alignment: .leading, spacing: 8) {
+                Text("启动")
+                    .font(.system(size: 11, weight: .medium))
+                    .foregroundColor(.white.opacity(0.5))
+                    .padding(.leading, 2)
+
+                Toggle(isOn: $settings.launchAtLogin) {
+                    Text("登录时自动启动")
+                        .font(.system(size: 12))
+                        .foregroundColor(.white.opacity(0.8))
+                }
+                .toggleStyle(.switch)
+                .tint(.blue)
+                .padding(.horizontal, 4)
+            }
+
             Divider()
                 .overlay(Color.white.opacity(0.15))
 

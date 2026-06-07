@@ -98,21 +98,74 @@ final class AppSettings: @unchecked Sendable {
     var customOrigin: CGPoint? {
         didSet { save() }
     }
+    /// 是否开机自启动
+    var launchAtLogin: Bool {
+        didSet {
+            save()
+            Self.applyLaunchAtLogin(enabled: oldValue)
+        }
+    }
 
     static let version = "1.0.0"
 
     private static let defaultsKey = "rili_appSettings"
 
+    /// LaunchAgent plist 路径
+    private static var launchAgentPlistURL: URL {
+        let dir = FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/LaunchAgents")
+        return dir.appendingPathComponent("com.rili.desktopcalendar.plist")
+    }
+
     init() {
-        if let data = UserDefaults.standard.data(forKey: Self.defaultsKey),
-           let decoded = try? JSONDecoder().decode(SavedSettings.self, from: data) {
-            self.calendarSize = decoded.size
-            self.calendarPosition = decoded.position
-            self.customOrigin = decoded.origin
+        let decoded: SavedSettings? = {
+            guard let data = UserDefaults.standard.data(forKey: Self.defaultsKey),
+                  let d = try? JSONDecoder().decode(SavedSettings.self, from: data)
+            else { return nil }
+            return d
+        }()
+
+        self.calendarSize = decoded?.size ?? .medium
+        self.calendarPosition = decoded?.position ?? .bottomRight
+        self.customOrigin = decoded?.origin
+        self.launchAtLogin = decoded?.launchAtLogin ?? false
+
+        // 启动时同步实际状态（用户可能手动删除了 plist）
+        if self.launchAtLogin {
+            let exists = FileManager.default.fileExists(
+                atPath: Self.launchAgentPlistURL.path
+            )
+            if !exists {
+                self.launchAtLogin = false
+                save()
+            }
+        }
+    }
+
+    // MARK: - Launch at Login
+
+    static func applyLaunchAtLogin(enabled: Bool) {
+        let dir = launchAgentPlistURL.deletingLastPathComponent()
+
+        if enabled {
+            // 确保 LaunchAgents 目录存在
+            try? FileManager.default.createDirectory(
+                at: dir,
+                withIntermediateDirectories: true
+            )
+
+            let plist: [String: Any] = [
+                "Label": "com.rili.desktopcalendar",
+                "Program": Bundle.main.bundlePath + "/Contents/MacOS/rili",
+                "RunAtLoad": true,
+                "KeepAlive": false,
+            ]
+            _ = (plist as NSDictionary).write(
+                to: launchAgentPlistURL,
+                atomically: true
+            )
         } else {
-            self.calendarSize = .medium
-            self.calendarPosition = .bottomRight
-            self.customOrigin = nil
+            try? FileManager.default.removeItem(at: launchAgentPlistURL)
         }
     }
 
@@ -122,7 +175,8 @@ final class AppSettings: @unchecked Sendable {
         let saved = SavedSettings(
             size: calendarSize,
             position: calendarPosition,
-            origin: customOrigin
+            origin: customOrigin,
+            launchAtLogin: launchAtLogin
         )
         if let data = try? JSONEncoder().encode(saved) {
             UserDefaults.standard.set(data, forKey: Self.defaultsKey)
@@ -135,4 +189,5 @@ private struct SavedSettings: Codable {
     let size: CalendarSize
     let position: CalendarPosition
     let origin: CGPoint?
+    let launchAtLogin: Bool
 }
