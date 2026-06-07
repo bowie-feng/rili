@@ -86,7 +86,7 @@ struct SettingsView: View {
                 Image(systemName: "calendar")
                     .font(.system(size: 11))
                     .foregroundColor(.white.opacity(0.4))
-                Text("桌面日历备忘录")
+                Text("桌面日历")
                     .font(.system(size: 11))
                     .foregroundColor(.white.opacity(0.5))
                 Spacer()

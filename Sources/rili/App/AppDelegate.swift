@@ -28,7 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if let button = statusItem.button {
             if let image = NSImage(
                 systemSymbolName: "calendar",
-                accessibilityDescription: "日历备忘录"
+                accessibilityDescription: "桌面日历"
             ) {
                 image.isTemplate = true
                 button.image = image
@@ -61,7 +61,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem.separator())
 
         let aboutItem = NSMenuItem(
-            title: "关于桌面日历备忘录",
+            title: "关于桌面日历",
             action: nil,
             keyEquivalent: ""
         )

@@ -35,9 +35,9 @@ cat > "$CONTENTS/Info.plist" << 'PLIST'
     <key>CFBundleIdentifier</key>
     <string>com.rili.desktopcalendar</string>
     <key>CFBundleName</key>
-    <string>日历备忘录</string>
+    <string>桌面日历</string>
     <key>CFBundleDisplayName</key>
-    <string>日历备忘录</string>
+    <string>桌面日历</string>
     <key>CFBundleVersion</key>
     <string>1.0.0</string>
     <key>CFBundleShortVersionString</key>
