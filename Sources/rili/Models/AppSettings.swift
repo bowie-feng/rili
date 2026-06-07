@@ -102,7 +102,7 @@ final class AppSettings: @unchecked Sendable {
     var launchAtLogin: Bool {
         didSet {
             save()
-            Self.applyLaunchAtLogin(enabled: oldValue)
+            Self.applyLaunchAtLogin(enabled: launchAtLogin)
         }
     }
 
