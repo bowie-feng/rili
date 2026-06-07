@@ -162,6 +162,7 @@ struct DayCellView: View {
                 .padding(.horizontal, 3)
                 .padding(.bottom, 3)
             }
+            .allowsHitTesting(false)
         }
     }
 
