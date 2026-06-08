@@ -51,10 +51,7 @@ final class DesktopWindowController {
 
         // 自由模式：监听窗口移动以保存位置
         if settings.calendarPosition == .free {
-            frameObserver = window.observe(\.frame, options: [.new]) { [weak self] win, _ in
-                guard self != nil else { return }
-                settings.customOrigin = win.frame.origin
-            }
+            setupFrameObserver(window: window, settings: settings)
         }
 
         self.window = window
@@ -82,10 +79,7 @@ final class DesktopWindowController {
 
         if settings.calendarPosition == .free {
             if frameObserver == nil {
-                frameObserver = window.observe(\.frame, options: [.new]) { [weak self] win, _ in
-                    guard self != nil else { return }
-                    settings.customOrigin = win.frame.origin
-                }
+                setupFrameObserver(window: window, settings: settings)
             }
         } else {
             frameObserver = nil
@@ -93,6 +87,15 @@ final class DesktopWindowController {
     }
 
     // MARK: - Private
+
+    private func setupFrameObserver(window: NSWindow, settings: AppSettings) {
+        frameObserver = window.observe(\.frame, options: [.new]) { [weak self] win, _ in
+            MainActor.assumeIsolated {
+                guard self != nil else { return }
+                settings.customOrigin = win.frame.origin
+            }
+        }
+    }
 
     private func calculateFrame(settings: AppSettings) -> NSRect {
         let (width, height) = settings.calendarSize.windowSize
@@ -123,14 +126,10 @@ final class DesktopWindowController {
             return NSRect(x: screenFrame.minX + margin,
                           y: screenFrame.minY + margin,
                           width: width, height: height)
-        case .bottomRight:
+        case .bottomRight, .free:
+            // 自由模式未保存位置时默认右下角
             return NSRect(x: screenFrame.maxX - width - margin,
-                          y: screenFrame.minY + margin + 40,
-                          width: width, height: height)
-        case .free:
-            // fallback: 自由模式未保存位置时用右下
-            return NSRect(x: screenFrame.maxX - width - margin,
-                          y: screenFrame.minY + margin + 40,
+                          y: screenFrame.minY + margin,
                           width: width, height: height)
         }
     }

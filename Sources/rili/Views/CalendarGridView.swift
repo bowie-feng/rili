@@ -12,10 +12,10 @@ struct CalendarGridView: View {
         VStack(spacing: 0) {
             // 周列表头
             HStack(spacing: 0) {
-                ForEach(weekdays, id: \.self) { day in
+                ForEach(Array(weekdays.enumerated()), id: \.offset) { index, day in
                     Text(day)
                         .font(.system(size: settings.calendarSize.weekdayFontSize, weight: .medium))
-                        .foregroundColor(isWeekend(day) ? .white.opacity(0.4) : .white.opacity(0.7))
+                        .foregroundColor(isWeekend(at: index) ? .white.opacity(0.4) : .white.opacity(0.7))
                         .frame(maxWidth: .infinity)
                 }
             }
@@ -47,8 +47,9 @@ struct CalendarGridView: View {
         }
     }
 
-    private func isWeekend(_ day: String) -> Bool {
-        day == "六" || day == "日"
+    /// 通过位置索引判断周末（0=周日, 6=周六），不依赖中文标签
+    private func isWeekend(at index: Int) -> Bool {
+        index == 0 || index == 6
     }
 }
 
