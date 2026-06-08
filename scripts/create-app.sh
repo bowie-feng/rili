@@ -144,6 +144,10 @@ else
     echo "   ⚠️  Icon generation skipped (use default)"
 fi
 
+# Ad-hoc 代码签名 — SMAppService.register() 要求 bundle 已签名
+echo "🔏 Signing app bundle (ad-hoc)..."
+codesign --force --sign - "$APP_BUNDLE" 2>/dev/null && echo "   Signed with ad-hoc identity" || echo "   ⚠️  Signing skipped (codesign not available)"
+
 echo ""
 echo "✅ App bundle created: $APP_BUNDLE"
 echo "   Size: $(du -sh "$APP_BUNDLE" | cut -f1)"
