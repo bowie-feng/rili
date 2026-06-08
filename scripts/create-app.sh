@@ -146,6 +146,7 @@ fi
 
 # Ad-hoc 代码签名 — SMAppService.register() 要求 bundle 已签名
 echo "🔏 Signing app bundle (ad-hoc)..."
+xattr -cr "$APP_BUNDLE" 2>/dev/null
 codesign --force --sign - "$APP_BUNDLE" 2>/dev/null && echo "   Signed with ad-hoc identity" || echo "   ⚠️  Signing skipped (codesign not available)"
 
 echo ""
