@@ -15,7 +15,8 @@ struct ContentView: View {
         VStack(spacing: 0) {
             MonthNavigationView(viewModel: viewModel, settings: settings)
                 .padding(.horizontal, 14)
-                .padding(.top, 10)
+                .padding(.top, 18)
+                .padding(.bottom, 8)
 
             CalendarGridView(viewModel: viewModel, settings: settings) { event in
                 viewModel.selectDate(event.date)
@@ -23,16 +24,16 @@ struct ContentView: View {
                 showEventEditor = true
             }
             .padding(.horizontal, 10)
-            .padding(.top, 6)
 
-            // 底部：选中日期详情条
+            // 底部：选中日期详情条（紧贴日历）
             SelectedDateBar(
                 viewModel: viewModel,
                 showEventEditor: $showEventEditor,
                 editingEvent: $editingEvent
             )
             .padding(.horizontal, 14)
-            .padding(.vertical, 8)
+            .padding(.top, 6)
+            .padding(.bottom, 10)
         }
         .background(
             Color.black.opacity(0.35)
@@ -110,7 +111,7 @@ private struct SelectedDateBar: View {
                             }
                         }
                     }
-                    .frame(maxHeight: 80)
+                    .frame(maxHeight: 120)
                 }
             }
         } else {

@@ -16,20 +16,20 @@ struct MonthNavigationView: View {
             } label: {
                 Image(systemName: "chevron.left")
                     .font(.system(size: chevronFont, weight: .medium))
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundColor(.white.opacity(0.85))
             }
             .buttonStyle(.plain)
 
             Text(viewModel.monthTitle)
                 .font(.system(size: navFont, weight: .semibold))
-                .foregroundColor(.white.opacity(0.9))
+                .foregroundColor(.white)
 
             Button {
                 viewModel.goToNextMonth()
             } label: {
                 Image(systemName: "chevron.right")
                     .font(.system(size: chevronFont, weight: .medium))
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundColor(.white.opacity(0.85))
             }
             .buttonStyle(.plain)
 
@@ -47,6 +47,6 @@ struct MonthNavigationView: View {
             }
             .buttonStyle(.plain)
         }
-        .frame(height: navFont + 14)
+        .frame(height: navFont + 20)
     }
 }
