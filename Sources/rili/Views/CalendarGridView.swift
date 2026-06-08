@@ -15,7 +15,7 @@ struct CalendarGridView: View {
                 ForEach(Array(weekdays.enumerated()), id: \.offset) { index, day in
                     Text(day)
                         .font(.system(size: settings.calendarSize.weekdayFontSize, weight: .medium))
-                        .foregroundColor(isWeekend(at: index) ? .white.opacity(0.4) : .white.opacity(0.7))
+                        .foregroundColor(isWeekend(at: index) ? .white.opacity(0.55) : .white.opacity(0.85))
                         .frame(maxWidth: .infinity)
                 }
             }
@@ -119,7 +119,7 @@ struct DayCellView: View {
 
                     Text(LunarCalendar.shortText(from: date))
                         .font(.system(size: size.lunarFontSize))
-                        .foregroundColor(.white.opacity(0.55))
+                        .foregroundColor(.white.opacity(0.75))
                         .lineLimit(1)
 
                     Spacer(minLength: 0)
@@ -128,12 +128,12 @@ struct DayCellView: View {
                     if !events.isEmpty {
                         Text("\(events.count)")
                             .font(.system(size: 8, weight: .bold))
-                            .foregroundColor(.white.opacity(0.85))
+                            .foregroundColor(.white)
                             .padding(.horizontal, 4)
                             .padding(.vertical, 1)
                             .background(
                                 Capsule()
-                                    .fill(Color.blue.opacity(0.55))
+                                    .fill(Color.blue.opacity(0.7))
                             )
                     }
                 }
@@ -163,7 +163,7 @@ struct DayCellView: View {
                             }
                             Text("+\(overflow)")
                                 .font(.system(size: max(size.eventFontSize - 1, 7)))
-                                .foregroundColor(.white.opacity(0.45))
+                                .foregroundColor(.white.opacity(0.6))
                         }
                         .padding(.top, 1)
                     }
@@ -176,12 +176,12 @@ struct DayCellView: View {
 
     private var cellBackground: Color {
         if isSelected {
-            return Color.blue.opacity(0.45)
+            return Color.blue.opacity(0.5)
         }
         if isToday {
-            return Color.blue.opacity(0.25)
+            return Color.blue.opacity(0.35)
         }
-        return Color.white.opacity(0.06)
+        return Color.white.opacity(0.08)
     }
 }
 
@@ -206,7 +206,7 @@ private struct EventTagView: View {
             // 事项标题
             Text(event.title)
                 .font(.system(size: fontSize, weight: .semibold))
-                .foregroundColor(.white.opacity(0.92))
+                .foregroundColor(.white)
                 .lineLimit(1)
 
             Spacer(minLength: 0)
@@ -215,10 +215,10 @@ private struct EventTagView: View {
         .padding(.vertical, 2)
         .background(
             RoundedRectangle(cornerRadius: 4)
-                .fill(c.opacity(0.22))
+                .fill(c.opacity(0.35))
                 .overlay(
                     RoundedRectangle(cornerRadius: 4)
-                        .strokeBorder(c.opacity(0.35), lineWidth: 0.5)
+                        .strokeBorder(c.opacity(0.55), lineWidth: 0.5)
                 )
         )
         .contentShape(Rectangle())

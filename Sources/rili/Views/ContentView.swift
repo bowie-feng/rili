@@ -35,11 +35,8 @@ struct ContentView: View {
             .padding(.vertical, 8)
         }
         .background(
-            ZStack {
-                Color.black.opacity(0.35)
-                VisualEffectView(material: .hudWindow, blendingMode: .withinWindow)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 16))
+            Color.black.opacity(0.35)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
         )
         .sheet(isPresented: $showEventEditor) {
             EventEditView(
@@ -68,14 +65,14 @@ private struct SelectedDateBar: View {
                     HStack(spacing: 6) {
                         Text(formattedDate(date))
                             .font(.system(size: 13, weight: .semibold))
-                            .foregroundColor(.white.opacity(0.95))
+                            .foregroundColor(.white)
                         let lunar = LunarCalendar.shortText(from: date)
                         if !lunar.isEmpty {
                             Text("·")
-                                .foregroundColor(.white.opacity(0.4))
+                                .foregroundColor(.white.opacity(0.6))
                             Text(lunar)
                                 .font(.system(size: 11))
-                                .foregroundColor(.white.opacity(0.5))
+                                .foregroundColor(.white.opacity(0.75))
                         }
                     }
                     Spacer()
@@ -94,7 +91,7 @@ private struct SelectedDateBar: View {
                 if events.isEmpty {
                     Text("暂无事项，点击 + 添加")
                         .font(.system(size: 11))
-                        .foregroundColor(.white.opacity(0.4))
+                        .foregroundColor(.white.opacity(0.6))
                         .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
                     ScrollView {
@@ -120,7 +117,7 @@ private struct SelectedDateBar: View {
             HStack {
                 Text("点击日历格子选择日期")
                     .font(.system(size: 12))
-                    .foregroundColor(.white.opacity(0.4))
+                    .foregroundColor(.white.opacity(0.6))
                 Spacer()
             }
         }
@@ -152,24 +149,24 @@ private struct CompactEventRow: View {
     var body: some View {
         HStack(spacing: 6) {
             Circle()
-                .fill(Color.blue.opacity(0.8))
+                .fill(Color.blue)
                 .frame(width: 4, height: 4)
 
             Text(event.title)
                 .font(.system(size: 11, weight: .medium))
-                .foregroundColor(.white.opacity(0.85))
+                .foregroundColor(.white)
                 .lineLimit(1)
 
             if let time = event.time {
                 Text(formatTime(time))
                     .font(.system(size: 10))
-                    .foregroundColor(.white.opacity(0.45))
+                    .foregroundColor(.white.opacity(0.65))
             }
 
             if !event.notes.isEmpty {
                 Text(event.notes)
                     .font(.system(size: 10))
-                    .foregroundColor(.white.opacity(0.4))
+                    .foregroundColor(.white.opacity(0.6))
                     .lineLimit(1)
             }
 
@@ -180,13 +177,13 @@ private struct CompactEventRow: View {
             } label: {
                 Image(systemName: "xmark.circle.fill")
                     .font(.system(size: 10))
-                    .foregroundColor(.white.opacity(0.3))
+                    .foregroundColor(.white.opacity(0.5))
             }
             .buttonStyle(.plain)
         }
         .padding(.horizontal, 6)
         .padding(.vertical, 4)
-        .background(Color.white.opacity(0.07))
+        .background(Color.white.opacity(0.1))
         .clipShape(RoundedRectangle(cornerRadius: 4))
         .contentShape(Rectangle())
         .onTapGesture { onTap() }

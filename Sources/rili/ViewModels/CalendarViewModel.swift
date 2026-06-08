@@ -26,10 +26,14 @@ final class CalendarViewModel {
     }
 
     var monthTitle: String {
+        Self.monthTitleFormatter.string(from: currentMonth)
+    }
+
+    private static let monthTitleFormatter: DateFormatter = {
         let fmt = DateFormatter()
         fmt.dateFormat = "yyyy年 M月"
-        return fmt.string(from: currentMonth)
-    }
+        return fmt
+    }()
 
     /// 当前月份的天数网格（6 行 × 7 列）
     var daysInGrid: [Date?] {

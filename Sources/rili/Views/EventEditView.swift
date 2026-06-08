@@ -165,9 +165,23 @@ struct EventEditView: View {
 
     private func formatDate(_ date: Date) -> String {
         let cal = Calendar.current
-        let fmt = DateFormatter()
-        fmt.dateFormat = cal.isDateInToday(date) ? "'今天' M月d日" : "M月d日 EEEE"
-        fmt.locale = Locale(identifier: "zh_CN")
-        return fmt.string(from: date)
+        if cal.isDateInToday(date) {
+            return Self.todayFormatter.string(from: date)
+        }
+        return Self.dateFormatter.string(from: date)
     }
+
+    private static let todayFormatter: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "'今天' M月d日"
+        fmt.locale = Locale(identifier: "zh_CN")
+        return fmt
+    }()
+
+    private static let dateFormatter: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "M月d日 EEEE"
+        fmt.locale = Locale(identifier: "zh_CN")
+        return fmt
+    }()
 }

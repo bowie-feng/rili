@@ -10,14 +10,14 @@ struct SettingsView: View {
             HStack {
                 Text("设置")
                     .font(.system(size: 15, weight: .semibold))
-                    .foregroundColor(.white.opacity(0.95))
+                    .foregroundColor(.white)
                 Spacer()
                 Button {
                     onDismiss()
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 16))
-                        .foregroundColor(.white.opacity(0.5))
+                        .foregroundColor(.white.opacity(0.7))
                 }
                 .buttonStyle(.plain)
             }
@@ -56,7 +56,7 @@ struct SettingsView: View {
                 Toggle(isOn: $settings.launchAtLogin) {
                     Text("登录时自动启动")
                         .font(.system(size: 12))
-                        .foregroundColor(.white.opacity(0.8))
+                        .foregroundColor(.white.opacity(0.9))
                 }
                 .toggleStyle(.switch)
                 .tint(.blue)
@@ -64,30 +64,27 @@ struct SettingsView: View {
             }
 
             Divider()
-                .overlay(Color.white.opacity(0.15))
+                .overlay(Color.white.opacity(0.2))
 
             // 版本信息
             HStack {
                 Image(systemName: "calendar")
                     .font(.system(size: 11))
-                    .foregroundColor(.white.opacity(0.4))
+                    .foregroundColor(.white.opacity(0.6))
                 Text("桌面日历")
                     .font(.system(size: 11))
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundColor(.white.opacity(0.65))
                 Spacer()
                 Text("v\(AppSettings.version)")
                     .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundColor(.white.opacity(0.7))
             }
         }
         .padding(20)
         .frame(width: 320)
         .background(
-            ZStack {
-                Color.black.opacity(0.4)
-                VisualEffectView(material: .menu, blendingMode: .withinWindow)
-            }
-            .clipShape(RoundedRectangle(cornerRadius: 14))
+            Color.black.opacity(0.4)
+                .clipShape(RoundedRectangle(cornerRadius: 14))
         )
     }
 
@@ -107,7 +104,7 @@ private struct SettingsSection<Content: View>: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.system(size: 11, weight: .medium))
-                .foregroundColor(.white.opacity(0.5))
+                .foregroundColor(.white.opacity(0.7))
                 .padding(.leading, 2)
             content()
         }
@@ -127,16 +124,16 @@ private struct SizeButton: View {
             VStack(spacing: 3) {
                 Text(label)
                     .font(.system(size: 13, weight: isSelected ? .semibold : .regular))
-                    .foregroundColor(isSelected ? .white : .white.opacity(0.7))
+                    .foregroundColor(isSelected ? .white : .white.opacity(0.85))
                 Text(subtitle)
                     .font(.system(size: 10))
-                    .foregroundColor(.white.opacity(0.4))
+                    .foregroundColor(.white.opacity(0.6))
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 10)
             .background(
                 RoundedRectangle(cornerRadius: 8)
-                    .fill(isSelected ? Color.blue.opacity(0.35) : Color.white.opacity(0.08))
+                    .fill(isSelected ? Color.blue.opacity(0.5) : Color.white.opacity(0.12))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
@@ -162,17 +159,17 @@ private struct PositionButton: View {
             HStack(spacing: 6) {
                 Image(systemName: isSelected ? "circle.fill" : "circle")
                     .font(.system(size: 8))
-                    .foregroundColor(isSelected ? .blue : .white.opacity(0.35))
+                    .foregroundColor(isSelected ? .blue : .white.opacity(0.5))
                 Text(label)
                     .font(.system(size: 12, weight: isSelected ? .semibold : .regular))
-                    .foregroundColor(isSelected ? .white : .white.opacity(0.7))
+                    .foregroundColor(isSelected ? .white : .white.opacity(0.85))
                 Spacer()
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 9)
             .background(
                 RoundedRectangle(cornerRadius: 6)
-                    .fill(Color.white.opacity(0.06))
+                    .fill(Color.white.opacity(0.1))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 6)
