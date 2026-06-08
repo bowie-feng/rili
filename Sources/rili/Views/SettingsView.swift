@@ -85,7 +85,7 @@ struct SettingsView: View {
         .background(
             ZStack {
                 Color.black.opacity(0.4)
-                VisualEffectBridge(material: .menu, blendingMode: .withinWindow)
+                VisualEffectView(material: .menu, blendingMode: .withinWindow)
             }
             .clipShape(RoundedRectangle(cornerRadius: 14))
         )
@@ -183,25 +183,5 @@ private struct PositionButton: View {
             )
         }
         .buttonStyle(.plain)
-    }
-}
-
-// MARK: - Visual Effect Bridge
-
-private struct VisualEffectBridge: NSViewRepresentable {
-    let material: NSVisualEffectView.Material
-    let blendingMode: NSVisualEffectView.BlendingMode
-
-    func makeNSView(context: Context) -> NSVisualEffectView {
-        let view = NSVisualEffectView()
-        view.material = material
-        view.blendingMode = blendingMode
-        view.state = .active
-        return view
-    }
-
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
-        nsView.material = material
-        nsView.blendingMode = blendingMode
     }
 }

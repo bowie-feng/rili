@@ -69,7 +69,8 @@ private struct SelectedDateBar: View {
                         Text(formattedDate(date))
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundColor(.white.opacity(0.95))
-                        if let lunar = lunarDateText(date) {
+                        let lunar = LunarCalendar.shortText(from: date)
+                        if !lunar.isEmpty {
                             Text("·")
                                 .foregroundColor(.white.opacity(0.4))
                             Text(lunar)
@@ -130,17 +131,15 @@ private struct SelectedDateBar: View {
         if cal.isDateInToday(date) { return "今天" }
         if cal.isDateInYesterday(date) { return "昨天" }
         if cal.isDateInTomorrow(date) { return "明天" }
-        let fmt = DateFormatter()
-        fmt.dateFormat = "M月d日"
-        return fmt.string(from: date)
+        return Self.dateFormatter.string(from: date)
     }
 
-    private func lunarDateText(_ date: Date) -> String? {
-        let ld = LunarCalendar.lunarDate(from: date)
-        if let f = ld.festival { return f }
-        let prefix = ld.isLeapMonth ? "闰" : ""
-        return "\(prefix)\(ld.monthName)\(ld.dayName)"
-    }
+    private static let dateFormatter: DateFormatter = {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "M月d日"
+        return fmt
+    }()
+
 }
 
 // MARK: - Compact Event Row
@@ -194,28 +193,12 @@ private struct CompactEventRow: View {
     }
 
     private func formatTime(_ date: Date) -> String {
+        Self.timeFormatter.string(from: date)
+    }
+
+    private static let timeFormatter: DateFormatter = {
         let fmt = DateFormatter()
         fmt.dateFormat = "HH:mm"
-        return fmt.string(from: date)
-    }
-}
-
-// MARK: - Visual Effect Bridge
-
-private struct VisualEffectView: NSViewRepresentable {
-    let material: NSVisualEffectView.Material
-    let blendingMode: NSVisualEffectView.BlendingMode
-
-    func makeNSView(context: Context) -> NSVisualEffectView {
-        let view = NSVisualEffectView()
-        view.material = material
-        view.blendingMode = blendingMode
-        view.state = .active
-        return view
-    }
-
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
-        nsView.material = material
-        nsView.blendingMode = blendingMode
-    }
+        return fmt
+    }()
 }
