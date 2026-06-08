@@ -12,14 +12,15 @@ final class DesktopWindowController {
             return
         }
 
+        let frame = calculateFrame(settings: settings)
+
         let contentView = ContentView(viewModel: viewModel, settings: settings)
         let hostingView = NSHostingView(rootView: contentView)
+        hostingView.frame = NSRect(origin: .zero, size: frame.size)
         hostingView.autoresizingMask = [.width, .height]
         hostingView.wantsLayer = true
         hostingView.layer?.cornerRadius = 16
         hostingView.layer?.masksToBounds = true
-
-        let frame = calculateFrame(settings: settings)
 
         let window = NSWindow(
             contentRect: frame,
