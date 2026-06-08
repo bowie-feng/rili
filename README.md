@@ -7,7 +7,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/platform-macOS%2014%2B-blue" alt="Platform">
   <img src="https://img.shields.io/badge/swift-6.0-orange" alt="Swift">
-  <img src="https://img.shields.io/badge/version-1.1.1-green" alt="Version">
+  <img src="https://img.shields.io/badge/version-1.2.0-green" alt="Version">
   <img src="https://img.shields.io/badge/license-MIT-lightgrey" alt="License">
 </p>
 
@@ -117,6 +117,7 @@ Sources/rili/
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
+| [v1.2.0](https://github.com/bowie-feng/rili/releases/tag/v1.2.0) | 2026-06-08 | UI 重构：加宽格子、去毛玻璃、高对比度、优化上下间距 |
 | [v1.1.1](https://github.com/bowie-feng/rili/releases/tag/v1.1.1) | 2026-06-08 | 代码签名修复、EventStore 性能优化、旧 plist 清理、代码重构 |
 | [v1.1.0](https://github.com/bowie-feng/rili/releases/tag/v1.1.0) | 2026-06-08 | 事项标签点击跳转、SMAppService 迁移、设置 UI 重构、窗口尺寸微调 |
 | [v1.0.0](https://github.com/bowie-feng/rili/releases/tag/v1.0.0) | 2026-06-07 | 初始发布：月历网格、农历、事项管理、桌面悬浮面板 |
