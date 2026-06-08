@@ -11,68 +11,39 @@ enum CalendarSize: String, CaseIterable, Codable {
 
     var displayName: String { rawValue }
 
+    /// 尺寸序号 — 所有按尺寸缩放的值都用这个计算，新增 size 只需改这里
+    private var sizeIndex: Int {
+        switch self {
+        case .medium: 0
+        case .large:  1
+        case .xlarge: 2
+        }
+    }
+
     /// 窗口尺寸 (宽, 高)
     var windowSize: (CGFloat, CGFloat) {
-        switch self {
-        case .medium: return (430, 660)
-        case .large:  return (510, 770)
-        case .xlarge: return (590, 880)
-        }
+        let widths:  [CGFloat] = [430, 510, 590]
+        let heights: [CGFloat] = [660, 770, 880]
+        return (widths[sizeIndex], heights[sizeIndex])
     }
 
     /// 日期格子高度
-    var cellHeight: CGFloat {
-        switch self {
-        case .medium: return 60
-        case .large:  return 72
-        case .xlarge: return 84
-        }
-    }
+    var cellHeight: CGFloat { [60, 72, 84][sizeIndex] }
 
     /// 日期数字字号
-    var dayFontSize: CGFloat {
-        switch self {
-        case .medium: return 13
-        case .large:  return 15
-        case .xlarge: return 17
-        }
-    }
+    var dayFontSize: CGFloat { [13, 15, 17][sizeIndex] }
 
     /// 农历字号
-    var lunarFontSize: CGFloat {
-        switch self {
-        case .medium: return 8
-        case .large:  return 9
-        case .xlarge: return 10
-        }
-    }
+    var lunarFontSize: CGFloat { [8, 9, 10][sizeIndex] }
 
     /// 事项标题字号
-    var eventFontSize: CGFloat {
-        switch self {
-        case .medium: return 8
-        case .large:  return 9
-        case .xlarge: return 10
-        }
-    }
+    var eventFontSize: CGFloat { [8, 9, 10][sizeIndex] }
 
     /// 导航栏字号
-    var navFontSize: CGFloat {
-        switch self {
-        case .medium: return 14
-        case .large:  return 16
-        case .xlarge: return 18
-        }
-    }
+    var navFontSize: CGFloat { [14, 16, 18][sizeIndex] }
 
     /// 周列表头字号
-    var weekdayFontSize: CGFloat {
-        switch self {
-        case .medium: return 11
-        case .large:  return 12
-        case .xlarge: return 13
-        }
-    }
+    var weekdayFontSize: CGFloat { [11, 12, 13][sizeIndex] }
 }
 
 enum CalendarPosition: String, CaseIterable, Codable {
@@ -123,6 +94,9 @@ final class AppSettings: @unchecked Sendable {
         self.calendarPosition = decoded?.position ?? .bottomRight
         self.customOrigin = decoded?.origin
 
+        // 迁移：清理 v1.0.0 遗留的 LaunchAgent plist
+        Self.removeLegacyLaunchAgentPlist()
+
         // 启动时同步实际状态 — 先检查系统状态再赋值，避免 didSet 覆盖
         let savedValue = decoded?.launchAtLogin ?? false
         let systemEnabled = SMAppService.mainApp.status == .enabled
@@ -136,6 +110,21 @@ final class AppSettings: @unchecked Sendable {
     }
 
     // MARK: - Launch at Login
+
+    /// v1.0.0 遗留的 LaunchAgent plist 路径
+    private static var legacyPlistURL: URL {
+        FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent("Library/LaunchAgents")
+            .appendingPathComponent("com.rili.desktopcalendar.plist")
+    }
+
+    /// 清理 v1.0.0 通过 LaunchAgent 注册的旧登录项 plist
+    private static func removeLegacyLaunchAgentPlist() {
+        let url = legacyPlistURL
+        if FileManager.default.fileExists(atPath: url.path) {
+            try? FileManager.default.removeItem(at: url)
+        }
+    }
 
     private func applyLaunchAtLogin(enabled: Bool) {
         do {
