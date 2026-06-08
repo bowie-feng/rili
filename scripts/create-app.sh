@@ -39,9 +39,9 @@ cat > "$CONTENTS/Info.plist" << 'PLIST'
     <key>CFBundleDisplayName</key>
     <string>桌面日历</string>
     <key>CFBundleVersion</key>
-    <string>1.0.0</string>
+    <string>1.1.0</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>1.1.0</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleSignature</key>

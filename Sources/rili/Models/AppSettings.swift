@@ -107,7 +107,7 @@ final class AppSettings: @unchecked Sendable {
         }
     }
 
-    static let version = "1.0.0"
+    static let version = "1.1.0"
 
     private static let defaultsKey = "rili_appSettings"
 
