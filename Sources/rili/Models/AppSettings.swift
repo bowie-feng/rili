@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import ServiceManagement
 
 // MARK: - Enums
 
@@ -13,9 +14,9 @@ enum CalendarSize: String, CaseIterable, Codable {
     /// 窗口尺寸 (宽, 高)
     var windowSize: (CGFloat, CGFloat) {
         switch self {
-        case .medium: return (430, 620)
-        case .large:  return (510, 720)
-        case .xlarge: return (590, 820)
+        case .medium: return (430, 660)
+        case .large:  return (510, 770)
+        case .xlarge: return (590, 880)
         }
     }
 
@@ -102,20 +103,13 @@ final class AppSettings: @unchecked Sendable {
     var launchAtLogin: Bool {
         didSet {
             save()
-            Self.applyLaunchAtLogin(enabled: launchAtLogin)
+            applyLaunchAtLogin(enabled: launchAtLogin)
         }
     }
 
     static let version = "1.0.0"
 
     private static let defaultsKey = "rili_appSettings"
-
-    /// LaunchAgent plist 路径
-    private static var launchAgentPlistURL: URL {
-        let dir = FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Library/LaunchAgents")
-        return dir.appendingPathComponent("com.rili.desktopcalendar.plist")
-    }
 
     init() {
         let decoded: SavedSettings? = {
@@ -128,44 +122,30 @@ final class AppSettings: @unchecked Sendable {
         self.calendarSize = decoded?.size ?? .medium
         self.calendarPosition = decoded?.position ?? .bottomRight
         self.customOrigin = decoded?.origin
-        self.launchAtLogin = decoded?.launchAtLogin ?? false
 
-        // 启动时同步实际状态（用户可能手动删除了 plist）
-        if self.launchAtLogin {
-            let exists = FileManager.default.fileExists(
-                atPath: Self.launchAgentPlistURL.path
-            )
-            if !exists {
-                self.launchAtLogin = false
-                save()
-            }
+        // 启动时同步实际状态 — 先检查系统状态再赋值，避免 didSet 覆盖
+        let savedValue = decoded?.launchAtLogin ?? false
+        let systemEnabled = SMAppService.mainApp.status == .enabled
+
+        if savedValue && !systemEnabled {
+            // 保存的是开启但系统登录项已被移除（用户可能手动删除了）
+            self.launchAtLogin = false
+        } else {
+            self.launchAtLogin = savedValue
         }
     }
 
     // MARK: - Launch at Login
 
-    static func applyLaunchAtLogin(enabled: Bool) {
-        let dir = launchAgentPlistURL.deletingLastPathComponent()
-
-        if enabled {
-            // 确保 LaunchAgents 目录存在
-            try? FileManager.default.createDirectory(
-                at: dir,
-                withIntermediateDirectories: true
-            )
-
-            let plist: [String: Any] = [
-                "Label": "com.rili.desktopcalendar",
-                "Program": Bundle.main.bundlePath + "/Contents/MacOS/rili",
-                "RunAtLoad": true,
-                "KeepAlive": false,
-            ]
-            _ = (plist as NSDictionary).write(
-                to: launchAgentPlistURL,
-                atomically: true
-            )
-        } else {
-            try? FileManager.default.removeItem(at: launchAgentPlistURL)
+    private func applyLaunchAtLogin(enabled: Bool) {
+        do {
+            if enabled {
+                try SMAppService.mainApp.register()
+            } else {
+                try SMAppService.mainApp.unregister()
+            }
+        } catch {
+            print("SMAppService error: \(error.localizedDescription)")
         }
     }
 
@@ -189,5 +169,5 @@ private struct SavedSettings: Codable {
     let size: CalendarSize
     let position: CalendarPosition
     let origin: CGPoint?
-    let launchAtLogin: Bool
+    let launchAtLogin: Bool?
 }
