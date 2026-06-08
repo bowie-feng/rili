@@ -22,8 +22,8 @@ enum CalendarSize: String, CaseIterable, Codable {
 
     /// 窗口尺寸 (宽, 高)
     var windowSize: (CGFloat, CGFloat) {
-        let widths:  [CGFloat] = [590, 640, 690]
-        let heights: [CGFloat] = [720, 830, 940]
+        let widths:  [CGFloat] = [590, 640, 750]
+        let heights: [CGFloat] = [720, 830, 980]
         return (widths[sizeIndex], heights[sizeIndex])
     }
 
