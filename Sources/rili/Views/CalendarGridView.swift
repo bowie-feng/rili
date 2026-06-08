@@ -3,6 +3,7 @@ import SwiftUI
 struct CalendarGridView: View {
     @Bindable var viewModel: CalendarViewModel
     let settings: AppSettings
+    var onEventTap: ((CalendarEvent) -> Void)? = nil
 
     private let weekdays = ["日", "一", "二", "三", "四", "五", "六"]
     private let columns: [GridItem] = Array(repeating: GridItem(.flexible(), spacing: 1), count: 7)
@@ -29,7 +30,8 @@ struct CalendarGridView: View {
                             isToday: viewModel.isToday(date),
                             isSelected: viewModel.isSelected(date),
                             events: viewModel.eventsForDate(date),
-                            settings: settings
+                            settings: settings,
+                            onEventTap: onEventTap
                         )
                         .frame(height: settings.calendarSize.cellHeight)
                         .contentShape(Rectangle())
@@ -68,8 +70,9 @@ enum EventColor: CaseIterable {
     }
 
     /// 根据事件 ID 确定性取色，同一事件始终同一颜色
+    /// 使用 UUID 首字节做稳定哈希，避免 hashValue 跨启动不稳定
     static func forEvent(_ event: CalendarEvent) -> EventColor {
-        let index = abs(event.id.hashValue) % Self.allCases.count
+        let index = Int(event.id.uuid.0) % Self.allCases.count
         return Self.allCases[index]
     }
 }
@@ -82,12 +85,16 @@ struct DayCellView: View {
     let isSelected: Bool
     let events: [CalendarEvent]
     let settings: AppSettings
+    var onEventTap: ((CalendarEvent) -> Void)? = nil
+
+    private let maxVisibleEvents = 2
+    private let maxOverflowDots = 3
 
     private var day: Int { Calendar.current.component(.day, from: date) }
 
     var body: some View {
         let size = settings.calendarSize
-        let visibleEvents = events.prefix(2)
+        let visibleEvents = events.prefix(maxVisibleEvents)
         let overflow = events.count - visibleEvents.count
 
         ZStack {
@@ -140,16 +147,17 @@ struct DayCellView: View {
                         EventTagView(
                             event: event,
                             color: EventColor.forEvent(event),
-                            fontSize: size.eventFontSize
+                            fontSize: size.eventFontSize,
+                            onTap: onEventTap
                         )
                     }
 
                     // 溢出提示
                     if overflow > 0 {
                         HStack(spacing: 2) {
-                            ForEach(0..<min(overflow, 3), id: \.self) { i in
+                            ForEach(0..<min(overflow, maxOverflowDots), id: \.self) { i in
                                 Circle()
-                                    .fill(EventColor.forEvent(events[2 + i]).fill)
+                                    .fill(EventColor.forEvent(events[maxVisibleEvents + i]).fill)
                                     .frame(width: 3.5, height: 3.5)
                             }
                             Text("+\(overflow)")
@@ -162,7 +170,6 @@ struct DayCellView: View {
                 .padding(.horizontal, 3)
                 .padding(.bottom, 3)
             }
-            .allowsHitTesting(false)
         }
     }
 
@@ -184,12 +191,15 @@ private struct EventTagView: View {
     let event: CalendarEvent
     let color: EventColor
     let fontSize: CGFloat
+    var onTap: ((CalendarEvent) -> Void)? = nil
 
     var body: some View {
+        let c = color.fill
+
         HStack(spacing: 3) {
             // 彩色圆点
             Circle()
-                .fill(color.fill)
+                .fill(c)
                 .frame(width: 5, height: 5)
 
             // 事项标题
@@ -204,11 +214,13 @@ private struct EventTagView: View {
         .padding(.vertical, 2)
         .background(
             RoundedRectangle(cornerRadius: 4)
-                .fill(color.fill.opacity(0.22))
+                .fill(c.opacity(0.22))
                 .overlay(
                     RoundedRectangle(cornerRadius: 4)
-                        .strokeBorder(color.fill.opacity(0.35), lineWidth: 0.5)
+                        .strokeBorder(c.opacity(0.35), lineWidth: 0.5)
                 )
         )
+        .contentShape(Rectangle())
+        .onTapGesture { onTap?(event) }
     }
 }

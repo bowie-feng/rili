@@ -23,12 +23,7 @@ struct SettingsView: View {
             }
 
             // 日历尺寸
-            VStack(alignment: .leading, spacing: 8) {
-                Text("日历尺寸")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.white.opacity(0.5))
-                    .padding(.leading, 2)
-
+            SettingsSection(title: "日历尺寸") {
                 HStack(spacing: 6) {
                     ForEach(CalendarSize.allCases, id: \.self) { size in
                         SizeButton(
@@ -43,12 +38,7 @@ struct SettingsView: View {
             }
 
             // 位置
-            VStack(alignment: .leading, spacing: 8) {
-                Text("屏幕位置")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.white.opacity(0.5))
-                    .padding(.leading, 2)
-
+            SettingsSection(title: "屏幕位置") {
                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 6), GridItem(.flexible(), spacing: 6)], spacing: 6) {
                     ForEach(CalendarPosition.allCases, id: \.self) { pos in
                         PositionButton(
@@ -62,12 +52,7 @@ struct SettingsView: View {
             }
 
             // 开机自启动
-            VStack(alignment: .leading, spacing: 8) {
-                Text("启动")
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundColor(.white.opacity(0.5))
-                    .padding(.leading, 2)
-
+            SettingsSection(title: "启动") {
                 Toggle(isOn: $settings.launchAtLogin) {
                     Text("登录时自动启动")
                         .font(.system(size: 12))
@@ -109,6 +94,23 @@ struct SettingsView: View {
     private func sizeSubtitle(_ size: CalendarSize) -> String {
         let ws = size.windowSize
         return "\(Int(ws.0))×\(Int(ws.1))"
+    }
+}
+
+// MARK: - Settings Section
+
+private struct SettingsSection<Content: View>: View {
+    let title: String
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.system(size: 11, weight: .medium))
+                .foregroundColor(.white.opacity(0.5))
+                .padding(.leading, 2)
+            content()
+        }
     }
 }
 

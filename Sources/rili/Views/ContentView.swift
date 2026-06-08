@@ -17,9 +17,13 @@ struct ContentView: View {
                 .padding(.horizontal, 14)
                 .padding(.top, 10)
 
-            CalendarGridView(viewModel: viewModel, settings: settings)
-                .padding(.horizontal, 10)
-                .padding(.top, 6)
+            CalendarGridView(viewModel: viewModel, settings: settings) { event in
+                viewModel.selectDate(event.date)
+                editingEvent = event
+                showEventEditor = true
+            }
+            .padding(.horizontal, 10)
+            .padding(.top, 6)
 
             // 底部：选中日期详情条
             SelectedDateBar(
