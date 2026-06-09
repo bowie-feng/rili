@@ -4,6 +4,7 @@ struct CalendarGridView: View {
     @Bindable var viewModel: CalendarViewModel
     let settings: AppSettings
     var onEventTap: ((CalendarEvent) -> Void)? = nil
+    var onDateDoubleTap: ((Date) -> Void)? = nil
 
     private let weekdays = ["日", "一", "二", "三", "四", "五", "六"]
     private let columns: [GridItem] = Array(repeating: GridItem(.flexible(), spacing: 1), count: 7)
@@ -37,6 +38,9 @@ struct CalendarGridView: View {
                         .contentShape(Rectangle())
                         .onTapGesture {
                             viewModel.selectDate(date)
+                        }
+                        .onTapGesture(count: 2) {
+                            onDateDoubleTap?(date)
                         }
                     } else {
                         Color.clear
